@@ -1,0 +1,4 @@
+openclash-kuma-monitor/.env
+openclash-kuma-monitor/data/
+*.pyc
+__pycache__/
