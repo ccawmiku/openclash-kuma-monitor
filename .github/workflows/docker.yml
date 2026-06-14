@@ -1,27 +1,28 @@
-name: Build Docker Image
+name: Docker
 
 on:
   push:
     branches:
       - master
       - main
-    tags:
-      - "v*"
+    paths:
+      - "openclash-kuma-monitor/**"
+      - ".github/workflows/docker.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
   packages: write
 
-env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/openclash-kuma-monitor
-
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -33,13 +34,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push checker
         uses: docker/build-push-action@v6
         with:
-          context: ./openclash-kuma-monitor
-          file: ./openclash-kuma-monitor/checker/Dockerfile
+          context: ./openclash-kuma-monitor/checker
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/openclash-kuma-monitor:latest
+            ghcr.io/${{ github.repository_owner }}/openclash-kuma-monitor:${{ github.sha }}
