@@ -37,7 +37,8 @@ jobs:
       - name: Build and push checker
         uses: docker/build-push-action@v6
         with:
-          context: ./openclash-kuma-monitor/checker
+          context: ./openclash-kuma-monitor
+          file: ./openclash-kuma-monitor/checker/Dockerfile
           platforms: linux/amd64
           push: true
           tags: |
